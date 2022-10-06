@@ -57,7 +57,7 @@ app.get('/', function (req, res) {
 });
 
 // Carpeta para exponer los archivos
-app.use('./media', express.static('media'));
+app.use('/media', express.static('media'));
 
 /**
  * Socket de los clientes que reciben mensajes de un chat
