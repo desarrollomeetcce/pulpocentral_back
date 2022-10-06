@@ -33,7 +33,7 @@ const messageTemplateController = require('../Controllers/MessageTemplate');
 
 const groupController = require('../Controllers/GroupController');
 
-const clientController = require('../Controllers/CLientController');
+const clientController = require('../Controllers/ClientController');
 
 /** Middleware para validar JWT */
 const auth = require('../middleware/auth');
