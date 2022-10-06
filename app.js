@@ -52,6 +52,7 @@ require('./routes')(app);
 // Registre la ruta de índice de su aplicación que devuelve el archivo HTML
 app.get('/', function (req, res) {
     console.log("Homepage");
+    res.send("All its ok");
     //res.sendFile(__dirname + '/index.html');
 });
 
