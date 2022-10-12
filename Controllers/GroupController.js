@@ -55,8 +55,8 @@ module.exports = {
                                 let client = tempCLientArr[j];
                                 client.adviser = advisers[i].id;
                                 client.groupId = newGroup.id;
-
-                                console.log(client);
+                                delete client.id;
+                               // console.log(client);
                                // if(client.id){
                                 //    await clientsModel.update(client,{where: {id: client.id}})
                                 //}else{
