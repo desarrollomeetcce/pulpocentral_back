@@ -1,8 +1,12 @@
 
 
-const accountSid = "AC0aee570a295ef12de9105ae2b418a40a";
-const authToken = "3ff05bdf0f51ee151d9fc941ded9b773";
-const client = require('twilio')(accountSid, authToken);
+const twilioAccountSid = 'AC0aee570a295ef12de9105ae2b418a40a';
+const twilioApiKey = 'SK722fb1962d7bed87a60a4c84cc39d49f';
+const twilioApiSecret = 'KnYo54OPxZ1oVNqY7Dwn1e1xZ8CL0SKC';
+
+// Initialize a Twilio client
+const client = require('twilio')(twilioApiKey, twilioApiSecret, {
+    accountSid: twilioAccountSid });
 
 async function call(number) {
     try {
