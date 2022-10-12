@@ -354,7 +354,7 @@ const sendCall = async (msgObj) => {
               
 
                 await clientTwilio.calls.create({
-                    url: `${process.env.BASE_URL}/media/call${messageHisotiral.dataValues.id}.xml}`,
+                    url: `${process.env.BASE_URL}/media/call${messageHisotiral.dataValues.id}.xml`,
                     to: tempContact,
                     from: '+19787055002',
                     method: 'GET'
