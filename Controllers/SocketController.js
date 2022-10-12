@@ -16,9 +16,7 @@ const { Op } = require("sequelize");
 const filesModel = require("../models").File;
 
 
-const accountSid = "AC0aee570a295ef12de9105ae2b418a40a";
-const authToken = "d4fdaa5a8ac9744d13471d83a0bd84f8";
-const clientTwilio = require('twilio')(accountSid, authToken);
+const clientTwilio = require('twilio')(process.env.TWILIO_ACCOUNTDIS, process.env.TWILIO_AUTH_TOKEN);
 
 let io;
 
