@@ -2,8 +2,14 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-//const { Server } = require("socket.io");
-let socketObjs = require('./Controllers/ClientSocketsController');
+
+/**
+ * Permite leer las variables de entorno
+ * Las variables de entorno estan en el archivo .env
+ */
+ require('dotenv').config()
+
+ 
 
 console.log(`${process.env.TWILIO_ACCOUNTDIS} ${process.env.TWILIO_AUTH_TOKEN}`);
 const wpsessionController = require('./Controllers/WpSessionController')
@@ -14,11 +20,7 @@ const sesiones = require('./Controllers/TestController')
 
 const socketIO = require('./Controllers/SocketController')
 const CronJob = require('cron').CronJob;
-/**
- * Permite leer las variables de entorno
- * Las variables de entorno estan en el archivo .env
- */
-require('dotenv').config()
+
 
 socketIO.initIO(server);
 
