@@ -4,9 +4,14 @@ const http = require('http');
 const server = http.createServer(app);
 //const { Server } = require("socket.io");
 let socketObjs = require('./Controllers/ClientSocketsController');
+
+console.log(`${process.env.TWILIO_ACCOUNTDIS} ${process.env.TWILIO_AUTH_TOKEN}`);
 const wpsessionController = require('./Controllers/WpSessionController')
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const sesiones = require('./Controllers/TestController')
+
+
+
 const socketIO = require('./Controllers/SocketController')
 const CronJob = require('cron').CronJob;
 /**
@@ -19,7 +24,6 @@ socketIO.initIO(server);
 
 const bodyParser = require('body-parser');
 
-console.log(`${process.env.TWILIO_ACCOUNTDIS} ${process.env.TWILIO_AUTH_TOKEN}`);
 /**
  * Lee el body y lo convierte en JSON para su uso
  */
