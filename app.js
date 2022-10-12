@@ -19,7 +19,7 @@ socketIO.initIO(server);
 
 const bodyParser = require('body-parser');
 
-
+console.log(`${process.env.TWILIO_ACCOUNTDIS} ${process.env.TWILIO_AUTH_TOKEN}`);
 /**
  * Lee el body y lo convierte en JSON para su uso
  */
