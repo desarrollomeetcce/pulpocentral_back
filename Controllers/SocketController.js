@@ -252,7 +252,7 @@ const sednMessge = async (msgObj) => {
 
 const sendCall = async (msgObj) => {
 
-    const { id, contacts } = msgObj;
+    const { id, contacts,from } = msgObj;
 
     console.log("inciia llamada");
     console.log(msgObj);
@@ -275,7 +275,7 @@ const sendCall = async (msgObj) => {
         return;
     }
 
-    console.log("inciia map de contactos");
+    console.log("incia map de contactos");
     /**
      * Crea un registro de cada contacto
      */
@@ -356,7 +356,7 @@ const sendCall = async (msgObj) => {
                 await clientTwilio.calls.create({
                     url: `${process.env.BASE_URL}/media/call${messageHisotiral.dataValues.id}.xml`,
                     to: tempContact,
-                    from: '+19787055002',
+                    from: from,
                     method: 'GET'
                 })
 

@@ -41,6 +41,10 @@ module.exports = {
         description:'Permite entrar a la bitacora del envio masivo'
       },
       {
+        name:'Bitacora llamadas Masivas',
+        description:'Permite entrar a la bitacora del envio masivo'
+      },
+      {
         name:'Eliminar Sesion',
         description:'Permite eliminar una sesion'
       },
@@ -96,7 +100,14 @@ module.exports = {
         name:'Asignar Clientes',
         description:'Permite Asignar clientes a usuarios'
       },
-      
+      {
+        name:'Eliminar telefono twilio',
+        description:'Permite eliminar una sesion'
+      },
+      {
+        name:'Agregar telefono twilio',
+        description:'Permite Agregar una sesion'
+      },
       
       
     ], {});

@@ -30,10 +30,15 @@ module.exports = {
 
             let clientsCount = clients.length;
             
-            group.membersCount = clientsCount
-            const newGroup = await groupModel.create(group);
+            let newGroup = null;
 
-            if(advisers){
+            if(group){
+                group.membersCount = clientsCount
+                newGroup = await groupModel.create(group);
+            }
+           
+            
+            if(advisers.length > 0){
                 let adCount = advisers.length;
                 
               
@@ -54,14 +59,17 @@ module.exports = {
                             try{
                                 let client = tempCLientArr[j];
                                 client.adviser = advisers[i].id;
-                                client.groupId = newGroup.id;
-                                delete client.id;
-                               // console.log(client);
-                               // if(client.id){
-                                //    await clientsModel.update(client,{where: {id: client.id}})
-                                //}else{
+                                if(group){
+                                    client.groupId = newGroup.id;
+                                }
+                              
+                               // delete client.id;
+                              
+                                if(client.id && client?.id !== 0){
+                                    await clientsModel.update({adviser: advisers[i].id},{where: {id: client.id}})
+                                }else{
                                     await clientsModel.create(client)
-                                //}
+                                }
                                 
                             }catch(err){
                                
