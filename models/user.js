@@ -31,7 +31,13 @@ module.exports = (sequelize, DataTypes) => {
       model: 'Profiles', 
       key: 'id', 
     }},
-    email: { type:DataTypes.STRING, primaryKey: true}
+    email: { type:DataTypes.STRING, primaryKey: true},
+    status: {
+      type: DataTypes.STRING,
+    },
+    socketId: {
+      type: DataTypes.STRING,
+    },
   }, {
     sequelize,
     modelName: 'User',

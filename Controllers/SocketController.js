@@ -9,10 +9,12 @@ const { MessageMedia } = require('whatsapp-web.js');
 const webhookModel = require("../models").WebHook;
 const webhooklogModel = require("../models").WebHookLog;
 const wordsModel = require("../models").Word;
+const userModel = require("../models").User;
 
 const sesiones = require('../Controllers/TestController')
 const history = require('./HistoricoController');
 const { Op } = require("sequelize");
+const user = require('../models/user');
 const filesModel = require("../models").File;
 
 const twilioAccountSid = 'AC0aee570a295ef12de9105ae2b418a40a';
@@ -429,8 +431,8 @@ const initIO = (server) => {
     /**
      * Conexion del socket en general
      */
-    io.on('connection', function (socket) {
-        //console.log("Cliente conectado");
+    io.on('connection', async function (socket) {
+       console.log(socket.handshake.query);
 
         /**
          * El socket manda el objeto con lass sessiones donde tiene permiso
@@ -817,13 +819,23 @@ const initIO = (server) => {
             }
         })
 
+
+        if(socket.handshake.query.user){
+            io.sockets.emit('adviserChange',{email: socket.handshake.query.user, status: 'Conectado'});
+            await userModel.update({status:"Conectado",socketId: socket.id},{where: {email: socket.handshake.query.user}})
+        }
         /**
          * Cierra la conexión si el socket termina
          */
-        socket.on('disconnect', function () {
+        socket.on('disconnect',async function () {
 
+            io.sockets.emit('adviserChange',{email: socket.handshake.query.user, status: 'Desconectado'});
+            if(socket.handshake.query.user){
+                await userModel.update({status:"Desconectado",socketId: null},{where: {email: socket.handshake.query.user}})
+                console.log(`Cliente desconectado ${socket.id} ${socket.connected}`);
+            }
             socket.disconnect();
-            console.log(`Cliente desconectado ${socket.id} ${socket.connected}`);
+          
         })
 
     });
