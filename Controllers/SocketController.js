@@ -17,13 +17,10 @@ const { Op } = require("sequelize");
 const user = require('../models/user');
 const filesModel = require("../models").File;
 
-const twilioAccountSid = 'AC0aee570a295ef12de9105ae2b418a40a';
-const twilioApiKey = 'SK722fb1962d7bed87a60a4c84cc39d49f';
-const twilioApiSecret = 'KnYo54OPxZ1oVNqY7Dwn1e1xZ8CL0SKC';
 
 // Initialize a Twilio client
-const clientTwilio = require('twilio')(twilioApiKey, twilioApiSecret, {
-    accountSid: twilioAccountSid });
+const clientTwilio = require('twilio')(process.env.TWILIO_API_KEY, process.env.TWILIO_API_SECRET, {
+    accountSid: process.env.TWILIO_ACCOUNTDIS });
 //const clientTwilio = require('twilio')(process.env.TWILIO_ACCOUNTDIS, process.env.TWILIO_AUTH_TOKEN);
 
 let io;
