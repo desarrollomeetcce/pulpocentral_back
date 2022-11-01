@@ -7,30 +7,11 @@ const clientCommentR = require('../models/').ClientCommentRelation;
 const clientTagR = require('../models/').ClientTagRelation;
 const history = require('./HistoricoController');
 
-const accountSid = "AC0aee570a295ef12de9105ae2b418a40a";
-const authToken = "d4fdaa5a8ac9744d13471d83a0bd84f8";
-const client = require('twilio')(accountSid, authToken);
 
 const Sequelize = require('sequelize');
-const { CompositionSettingsList } = require('twilio/lib/rest/video/v1/compositionSettings');
 const Op = Sequelize.Op;
 
 
-async function call(number) {
-    try {
-        const resp = await client.calls.create({
-            url: 'https://pulpo.sfo3.digitaloceanspaces.com/twilio/test.xml',
-            to: number,
-            from: '+19787055002',
-            method: 'GET'
-        })
-        return resp;
-
-    } catch (err) {
-        console.log(err);
-        return err;
-    }
-}
 
 /**
  * Controlador para manejar los datos de clientes 
