@@ -253,7 +253,7 @@ const sendCall = async (msgObj) => {
 
     const { id, contacts,from } = msgObj;
 
-    console.log("inciia llamada"+from);
+    console.log("inciia llamada "+from);
     console.log(msgObj);
 
     let messageHisotiral = null;
