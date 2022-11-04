@@ -3,6 +3,7 @@ const usuario = require('../models').User;
 const profileModel = require('../models').Profile;
 const permission = require('../models').Permission;
 const wpsession = require('../models').WpSession;
+const twilioPhone = require('../models').TwilioPhone;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -45,6 +46,8 @@ module.exports = {
                             },
                             {
                                 model: wpsession,
+                            },{
+                                model: twilioPhone
                             }
                         ]
                     }
@@ -77,10 +80,12 @@ module.exports = {
                     arrSyst.push(userSelect.Profile.WpSessions[index].name);
                     arrSystNum.push(userSelect.Profile.WpSessions[index].id);
                 }
+
                 let userInfo = {
                     permissions: arrPerm,
                     wpsessions: arrSyst,
                     wpsessionsNum: arrSystNum,
+                    phones: userSelect.Profile.TwilioPhones,
                     id: userSelect.id
                 }
 

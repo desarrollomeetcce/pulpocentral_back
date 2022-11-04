@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.belongsToMany(models.Permission,{ through: 'PermProfileRelations' })
       this.belongsToMany(models.WpSession,{ through: 'WpProfileRelations' })
+      this.belongsToMany(models.TwilioPhone,{ through: 'TwilioProfileRelations' })
     }
   };
   Profile.init({

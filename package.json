@@ -21,12 +21,12 @@
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.16",
     "qrcode-terminal": "^0.12.0",
-    "sequelize": "^6.19.0",
-    "sequelize-cli": "^6.4.1",
+    "sequelize": "^6.25.3",
+    "sequelize-cli": "^6.5.2",
     "socket.io": "^4.5.0",
     "socket.io-client": "^4.5.0",
     "twilio": "^3.82.1",
     "validate-phone-number-node-js": "^0.0.1",
-    "whatsapp-web.js": "^1.17.1"
+    "whatsapp-web.js": "^1.18.2"
   }
 }

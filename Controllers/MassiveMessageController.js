@@ -118,21 +118,26 @@ module.exports = {
         let arrMsg = [];
         let historyObj = {};
 
-        const { sessions, forwardingId, kind } = req.body;
+        const { sessions, forwardingId, kind,userId } = req.body;
 
 
+        const filter ={
+            wpId: sessions ? sessions : [],
+            forwardingId: forwardingId ? forwardingId : 0,
+            kind: kind ? kind : null,
+        }
 
+
+        if(userId){
+            filter.userSend = userId;
+        }
         /**
          * Busca las sessiones, si no existen regresa un arreglo vacio
          */
         try {
             const messages = await massivemessages.findAll(
                 {
-                    where: {
-                        wpId: sessions ? sessions : [],
-                        forwardingId: forwardingId ? forwardingId : 0,
-                        kind: kind ? kind : null,
-                    },
+                    where: filter,
                     include: [
                         {
                             model: massivemessagelist,
