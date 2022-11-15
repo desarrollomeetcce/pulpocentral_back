@@ -20,7 +20,8 @@ const filesModel = require("../models").File;
 
 // Initialize a Twilio client
 const clientTwilio = require('twilio')(process.env.TWILIO_API_KEY, process.env.TWILIO_API_SECRET, {
-    accountSid: process.env.TWILIO_ACCOUNTDIS });
+    accountSid: process.env.TWILIO_ACCOUNTDIS
+});
 //const clientTwilio = require('twilio')(process.env.TWILIO_ACCOUNTDIS, process.env.TWILIO_AUTH_TOKEN);
 
 let io;
@@ -249,12 +250,19 @@ const sednMessge = async (msgObj) => {
 }
 
 
+
 const sendCall = async (msgObj) => {
 
-    const { id, contacts,from } = msgObj;
+    let { id, contacts, from,resend,resendAll } = msgObj;
 
-    console.log("inciia llamada "+from);
+    console.log("inciia llamada " + from);
     console.log(msgObj);
+
+    let resendText= '';
+
+    if(resend){
+        resendText=' (Reenviado)';
+    }
 
     let messageHisotiral = null;
     try {
@@ -275,24 +283,33 @@ const sendCall = async (msgObj) => {
     }
 
     console.log("incia map de contactos");
+
+    if(resendAll){
+        contacts  = await massiveMessagesList.findAll({
+            where: {
+                msgMassiveId: messageHisotiral.dataValues.id,
+                status: { [Op.notLike]: '%Exitoso%' }// NOT LIKE '%hat'
+            }
+        });
+    }
     /**
      * Crea un registro de cada contacto
      */
     contacts.map(async (contact, key) => {
         try {
 
-      
+
             const updated = await massiveMessagesList.findOne({
                 where: {
                     msgMassiveId: messageHisotiral.dataValues.id,
-                    contact:  contact.phone,
+                    contact: contact.phone,
                 }
             })
-           
+
             if (!updated) {
                 await massiveMessagesList.create({
                     msgMassiveId: messageHisotiral.dataValues.id,
-                    contact:  contact.phone,
+                    contact: contact.phone,
                     status: 'Pendiente',
                 });
             }
@@ -314,13 +331,16 @@ const sendCall = async (msgObj) => {
 
     //console.log("Crea el speech");
 
-    const fs = require('fs');
+    if(!resend){
+        const fs = require('fs');
 
-    fs.writeFileSync(`media/call${messageHisotiral.dataValues.id}.xml`, 
-    `<Response>
-    <Play>${process.env.BASE_URL}/media/${media}</Play>
-    </Response>
-    `);
+        fs.writeFileSync(`media/call${messageHisotiral.dataValues.id}.xml`,
+            `<Response>
+        <Play>${process.env.BASE_URL}/media/${media}</Play>
+        </Response>
+        `);
+    }
+  
 
     console.log(`
     ${process.env.BASE_URL}/media/${media}`);
@@ -340,17 +360,17 @@ const sendCall = async (msgObj) => {
             //  console.log(`Esperando para enviar mensaje ${messageHisotiral.dataValues.delay}`)
             //await sleep(messageHisotiral.dataValues.delay || 10000);
 
-            let statusTemp = 'Error'
+            let statusTemp = 'Error'+resendText;
 
             try {
 
-                let tempContact =  contact.phone;
+                let tempContact = contact?.phone ?  contact.phone:  contact?.contact;
 
                 if (!tempContact.includes("+")) {
                     tempContact = "+" + tempContact;
                 }
 
-              
+
 
                 await clientTwilio.calls.create({
                     url: `${process.env.BASE_URL}/media/call${messageHisotiral.dataValues.id}.xml`,
@@ -359,18 +379,19 @@ const sendCall = async (msgObj) => {
                     method: 'GET'
                 })
 
-                statusTemp = 'Exitoso';
-
+                statusTemp = 'Exitoso'+resendText;
+                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact?.phone ?  contact.phone:  contact.contact, count: count,status: 'Exitoso'+resendText });
             } catch (err) {
                 console.log(err);
-            }   
+                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact?.phone ?  contact.phone:  contact.contact, count: count,status: 'Error'+resendText });
+            }
 
 
             count++;
             await massiveMessages.update({ totalMessagesSend: count }, { where: { id: messageHisotiral.dataValues.id } });
 
             // console.log(`MSG_SUCCESS${messageHisotiral.id}`)
-            io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact, count: count });
+            
             /**
              * Actualiza el estatus
              */
@@ -381,7 +402,7 @@ const sendCall = async (msgObj) => {
                     {
                         where: {
                             msgMassiveId: messageHisotiral.dataValues.id,
-                            contact:  contact.phone,
+                            contact: contact?.phone ?  contact.phone:  contact.contact,
                         }
                     });
                 //  return true;
@@ -396,12 +417,13 @@ const sendCall = async (msgObj) => {
              * Actualiza el estatus
              */
             try {
+                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact?.phone ?  contact.phone:  contact.contact, count: count,status: 'Error'+resendText });
                 await massiveMessagesList.update(
-                    { status: 'Error' },
+                    { status: 'Error'+resendText },
                     {
                         where: {
                             msgMassiveId: messageHisotiral.dataValues.id,
-                            contact:  contact.phone,
+                            contact: contact?.phone ?  contact.phone:  contact.contact,
                         }
                     });
                 //   return true;
@@ -429,7 +451,7 @@ const initIO = (server) => {
      * Conexion del socket en general
      */
     io.on('connection', async function (socket) {
-       console.log(socket.handshake.query);
+        console.log(socket.handshake.query);
 
         /**
          * El socket manda el objeto con lass sessiones donde tiene permiso
@@ -817,22 +839,22 @@ const initIO = (server) => {
         })
 
 
-        if(socket.handshake.query.user){
-            io.sockets.emit('adviserChange',{email: socket.handshake.query.user, status: 'Conectado'});
-            await userModel.update({status:"Conectado",socketId: socket.id},{where: {email: socket.handshake.query.user}})
+        if (socket.handshake.query.user) {
+            io.sockets.emit('adviserChange', { email: socket.handshake.query.user, status: 'Conectado' });
+            await userModel.update({ status: "Conectado", socketId: socket.id }, { where: { email: socket.handshake.query.user } })
         }
         /**
          * Cierra la conexión si el socket termina
          */
-        socket.on('disconnect',async function () {
+        socket.on('disconnect', async function () {
 
-            io.sockets.emit('adviserChange',{email: socket.handshake.query.user, status: 'Desconectado'});
-            if(socket.handshake.query.user){
-                await userModel.update({status:"Desconectado",socketId: null},{where: {email: socket.handshake.query.user}})
+            io.sockets.emit('adviserChange', { email: socket.handshake.query.user, status: 'Desconectado' });
+            if (socket.handshake.query.user) {
+                await userModel.update({ status: "Desconectado", socketId: null }, { where: { email: socket.handshake.query.user } })
                 console.log(`Cliente desconectado ${socket.id} ${socket.connected}`);
             }
             socket.disconnect();
-          
+
         })
 
     });

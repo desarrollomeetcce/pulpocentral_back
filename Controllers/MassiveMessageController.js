@@ -122,12 +122,18 @@ module.exports = {
 
 
         const filter ={
-            wpId: sessions ? sessions : [],
+           
             forwardingId: forwardingId ? forwardingId : 0,
-            kind: kind ? kind : null,
+            
         }
 
+        if(!forwardingId){
+            filter.kind = kind ? kind : null;
+        }
 
+        if(sessions){
+            filter.wpId= sessions ? sessions : [];
+        }
         if(userId){
             filter.userSend = userId;
         }

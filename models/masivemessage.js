@@ -44,6 +44,9 @@ module.exports = (sequelize, DataTypes) => {
     userSend: {
       type: DataTypes.STRING
     },
+    twilioPhone: {
+      type: DataTypes.STRING
+    },
     delay: {
       type: DataTypes.BIGINT
     },

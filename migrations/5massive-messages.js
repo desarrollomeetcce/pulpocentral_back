@@ -38,6 +38,9 @@ module.exports = {
       userSend: {
         type: Sequelize.STRING
       },
+      twilioPhone: {
+        type: Sequelize.STRING
+      },
       delay: {
         type: Sequelize.BIGINT
       },
