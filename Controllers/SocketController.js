@@ -124,8 +124,28 @@ const sednMessge = async (msgObj) => {
          * De esta forma no es tan evidente que es un bot
          */
 
+        let regularExpression= /(?<=\{).*?(?=\})/g;
+        
 
         let newMsg = messageHisotiral.dataValues.body;
+
+       
+        let tempSpeechArr = newMsg.match(regularExpression);
+
+        if(tempSpeechArr?.length > 0 ){
+            for(let i = 0; i< tempSpeechArr.length;i++){
+                const speechArr = tempSpeechArr[i].split(',');
+    
+                let newIndex = count % speechArr.length;
+    
+                newMsg = newMsg.replace(`{${tempSpeechArr}}`, speechArr[newIndex]);
+                console.log(newMsg)
+            }
+        }
+
+       
+      
+
         // console.log(webhookTemp);
         for (let i = 0; i < messageHisotiral.dataValues.Words.length; i++) {
 
