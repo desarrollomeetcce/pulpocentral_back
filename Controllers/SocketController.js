@@ -134,7 +134,7 @@ const sednMessge = async (msgObj) => {
 
         if(tempSpeechArr?.length > 0 ){
             for(let i = 0; i< tempSpeechArr.length;i++){
-                const speechArr = tempSpeechArr[i].split(',');
+                const speechArr = tempSpeechArr[i].split('|');
     
                 let newIndex = count % speechArr.length;
     
