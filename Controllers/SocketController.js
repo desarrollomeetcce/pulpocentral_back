@@ -134,11 +134,12 @@ const sednMessge = async (msgObj) => {
 
         if(tempSpeechArr?.length > 0 ){
             for(let i = 0; i< tempSpeechArr.length;i++){
+                console.log(tempSpeechArr[i]);
                 const speechArr = tempSpeechArr[i].split('|');
-    
+                console.log(speechArr)
                 let newIndex = count % speechArr.length;
     
-                newMsg = newMsg.replace(`{${tempSpeechArr}}`, speechArr[newIndex]);
+                newMsg = newMsg.replace(`{${tempSpeechArr[i]}}`, speechArr[newIndex]);
                 console.log(newMsg)
             }
         }
