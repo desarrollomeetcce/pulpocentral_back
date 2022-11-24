@@ -460,9 +460,11 @@ const sendCall = async (msgObj) => {
 
 
 const initIO = (server) => {
+
+    const allowedOrigins = process.env.FRONT_ORIGIN.split(",");
     io = require("socket.io")(server, {
         cors: {
-            origin: process.env.FRONT_ORIGIN,
+            origin: allowedOrigins,
             methods: ["GET", "POST"]
         }
     });
