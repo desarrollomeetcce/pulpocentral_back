@@ -81,7 +81,10 @@ module.exports = {
 
         const { id, wpsessionObj } = req.body;
 
-        wpsessionObj.sessionAuth =   wpsessionObj?.sessionAuth.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, '-');
+        if(wpsessionObj?.sessionAuth){
+            wpsessionObj.sessionAuth =   wpsessionObj?.sessionAuth.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, '-');
+        }
+       
 
         try {
             delete wpsessionObj.id;
