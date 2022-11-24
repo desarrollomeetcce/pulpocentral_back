@@ -10,8 +10,6 @@ const server = http.createServer(app);
  require('dotenv').config()
 
  
-
-console.log(`${process.env.TWILIO_ACCOUNTDIS} ${process.env.TWILIO_AUTH_TOKEN}`);
 const wpsessionController = require('./Controllers/WpSessionController')
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const sesiones = require('./Controllers/TestController')
@@ -42,7 +40,14 @@ server.listen(process.env.PORT);
  * Permite los métodos POST,GET y PATCH
  */
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", process.env.FRONT_ORIGIN);
+
+    const allowedOrigins = process.env.FRONT_ORIGIN.split(",");
+
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+         res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,pulpocentral-access-token");
     res.header("Access-Control-Allow-Methods", "POST,GET,PATCH,PUT");
     next();
