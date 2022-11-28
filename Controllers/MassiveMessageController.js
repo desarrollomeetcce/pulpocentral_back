@@ -394,5 +394,94 @@ module.exports = {
             return [];
         }
     },
+    /**
+     * Fucnion para eliminar el perfil por id
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
+     async deleteProfile(req, res) {
+        /**
+        * Variables para guardar los mensaje y el historial
+        */
+        let arrMsg = [];
+        let historyObj = {};
+
+        /**
+         * Revisamos si contiene un id
+         */
+        const { id } = req.body;
+
+        if (id) {
+            try {
+                const deletedMessage = await massivemessages.destroy({
+                    where: {
+                        id: id
+                    }
+                })
+                arrMsg.push(`Se eliminó el id ${id}`);
+                arrMsg.push(deletedMessage);
+                return res.status(200).send({ status: 'Success', msg: arrMsg });
+            } catch (err) {
+                historyObj.user = id;
+                historyObj.changeType = 'MassiveDelError';
+                historyObj.description = `Err:  ${err.message}`;
+                history.regHistory(historyObj);
+
+                arrMsg.push(`Ocurrio un error al eliminar el grupo de bitacora`);
+                arrMsg.push(err.message);
+
+                return res.status(200).send({ status: 'Error', msg: arrMsg });
+            }
+        } else {
+            arrMsg.push(`El id es requerido`);
+            return res.status(200).send({ status: 'Error', msg: arrMsg });
+        }
+    },
+
+    /**
+     * Fucnion para actualizar el nombre del grupo 
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
+     async updateGroup(req, res) {
+        /**
+        * Variables para guardar los mensaje y el historial
+        */
+        let arrMsg = [];
+        let historyObj = {};
+
+        /**
+         * Revisamos si contiene un id
+         */
+        const { id,name} = req.body;
+
+        if (id) {
+            try {
+                const deletedMessage = await massivemessages.update({name: name},{
+                    where: {
+                        id: id
+                    }
+                })
+                arrMsg.push(`Se actualizó el id ${id}`);
+                arrMsg.push(deletedMessage);
+                return res.status(200).send({ status: 'Success', msg: arrMsg });
+            } catch (err) {
+                historyObj.user = id;
+                historyObj.changeType = 'MassiveUpdateError';
+                historyObj.description = `Err:  ${err.message}`;
+                history.regHistory(historyObj);
+
+                arrMsg.push(`Ocurrio un error al actualizar el grupo de bitacora`);
+                arrMsg.push(err.message);
+
+                return res.status(200).send({ status: 'Error', msg: arrMsg });
+            }
+        } else {
+            arrMsg.push(`El id es requerido`);
+            return res.status(200).send({ status: 'Error', msg: arrMsg });
+        }
+    }
 
 };

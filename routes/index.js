@@ -128,6 +128,9 @@ module.exports = (app) => {
     app.post('/api/massive/create', auth, massivemessageController.addMassive);
     app.post('/api/massive/listLite', massivemessageController.getMassiveLite);
     app.post('/api/massive/messagelistLite', massivemessageController.getMassiveMessagesLite);
+
+    app.post('/api/massive/delete', auth, massivemessageController.deleteProfile);
+    app.post('/api/massivemessage/udpate', auth, massivemessageController.updateGroup);
     /**
      * Sube un archivo y regresa la ruta
      */
