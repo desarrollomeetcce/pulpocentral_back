@@ -135,31 +135,36 @@ const sendProgramatedMessages = new CronJob('* * * * *', async function () {
     console.log("inicia envio masivo");
     let dEnd = new Date();
     //  dEnd.setHours(dEnd.getHours() + 1);
-    dEnd = dEnd.toLocaleString('sv-SE', { timeZone: process.env.TZ || 'America/Lima' })
+    if (process.env.TZ) {
+        dEnd = dEnd.toLocaleString('sv-SE', { timeZone: process.env.TZ || 'America/Lima' })
+    }
+
 
     let dIni = new Date();
     dIni.setHours(dIni.getHours() - 1);
-    dIni = dIni.toLocaleString('sv-SE', { timeZone: process.env.TZ || 'America/Lima' });
+    if (process.env.TZ) {
+        dIni = dIni.toLocaleString('sv-SE', { timeZone: process.env.TZ || 'America/Lima' });
+    }
 
-    console.log(dIni,dEnd)
+    console.log(dIni, dEnd)
     const programatedMessages = await scheduleMsgController.getProgramatedMsgs(dIni, dEnd);
     //console.log(programatedMessages)
 
 
     await Promise.all(programatedMessages.map(async (msg, key) => {
-        try{
+        try {
             if (msg.dataValues.type == 'Mensaje') {
                 const msgObj = { id: msg.dataValues.idMassive, contacts: msg.dataValues.contacts, wpsession: msg.dataValues.MassiveMessage.wpId };
                 console.log(msgObj);
                 await socketIO.sendMessage(msgObj);
-            }else{
-               
+            } else {
+
                 const msgObj = { id: msg.dataValues.idMassive, contacts: msg.dataValues.contacts, from: msg.dataValues.MassiveMessage.twilioPhone.trim() };
                 console.log(msgObj);
                 await socketIO.sendCall(msgObj);
             }
-    
-        }catch(err){
+
+        } catch (err) {
             console.log(err)
         }
     }))
