@@ -22,83 +22,83 @@ module.exports = {
         let historyObj = {};
 
 
-        let {group,clients,advisers} = req.body;
+        let { group, clients, advisers } = req.body;
         /**
          * Busca los tags, si no existen regresa un arreglo vacio
          */
         try {
 
             let clientsCount = clients.length;
-            
+
             let newGroup = null;
 
-            if(group){
+            if (group) {
                 group.membersCount = clientsCount
                 newGroup = await groupModel.create(group);
             }
-           
-            
-            if(advisers.length > 0){
+
+
+            if (advisers.length > 0) {
                 let adCount = advisers.length;
-                
-              
-                if(clientsCount >= adCount){
-                    let repCount = clientsCount/adCount;
+
+
+                if (clientsCount >= adCount) {
+                    let repCount = clientsCount / adCount;
                     let staticCount = repCount;
                     let iniCount = 0;
 
-                    
 
-                    for(let i = 0; i< advisers.length; i++){
-                        let tempCLientArr = clients.slice(iniCount,repCount);
-             
-                         tempCLientArr = clients.slice(iniCount,repCount);
 
-                        
-                        for(let j = 0; j<tempCLientArr.length;j++){
-                            try{
+                    for (let i = 0; i < advisers.length; i++) {
+                        let tempCLientArr = clients.slice(iniCount, repCount);
+
+                        tempCLientArr = clients.slice(iniCount, repCount);
+
+
+                        for (let j = 0; j < tempCLientArr.length; j++) {
+                            try {
                                 let client = tempCLientArr[j];
                                 client.adviser = advisers[i].id;
-                                if(group){
+                                if (group) {
                                     client.groupId = newGroup.id;
                                 }
-                              
-                               // delete client.id;
-                              
-                                if(client.id && client?.id !== 0){
-                                    await clientsModel.update({adviser: advisers[i].id},{where: {id: client.id}})
-                                }else{
+
+                                // delete client.id;
+
+                                if (client.id && client?.id !== 0) {
+                                    await clientsModel.update({ adviser: advisers[i].id }, { where: { id: client.id } })
+                                } else {
                                     await clientsModel.create(client)
                                 }
-                                
-                            }catch(err){
-                               
+
+                            } catch (err) {
+
                                 console.log(err);
-                            
+
                             }
                         }
                         iniCount = repCount;
-                        repCount +=staticCount;
+                        repCount += staticCount;
                     }
                 }
-            }else{
-                await Promise.all(clients.map(async (client)=>{
+            } else {
+                await Promise.all(clients.map(async (client) => {
                     client.groupId = newGroup.id;
-                    
-                    try{
+
+                    try {
                         return await clientsModel.create(client)
-                    }catch(err){
-                       
+                    } catch (err) {
+
                         console.log(err);
                         return false;
                     }
-                    
+
                 }))
             }
 
-           
-            
-            
+
+
+
             return res.status(200).send({ status: "Success", clientsCount: clients.length, group: newGroup });
 
         } catch (err) {
@@ -113,6 +113,31 @@ module.exports = {
             return res.status(200).send({ status: "Error", msg: arrMsg });
         }
     },
+    /**
+     * Regresa un lista de los grupos tambien llamados base de datos
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
+    async get(req, res) {
+        let arrMsg = [];
 
+        try {
+            /**
+             * Consulta todos los grupos
+             * 
+             */
+            const groups = await groupModel.findAll({
+
+            });
+            return res.status(200).send({ status: 'Success', groups: groups });
+
+        } catch (err) {
+
+            arrMsg.push('Ocurrio un error al consultar los grupos');
+            arrMsg.push(err.message);
+            return res.status(200).send({ status: 'error', msg: arrMsg });
+        }
+    },
 
 };

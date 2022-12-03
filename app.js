@@ -7,10 +7,13 @@ const server = http.createServer(app);
  * Permite leer las variables de entorno
  * Las variables de entorno estan en el archivo .env
  */
- require('dotenv').config()
+require('dotenv').config()
 
- 
+
 const wpsessionController = require('./Controllers/WpSessionController')
+
+const scheduleMsgController = require('./Controllers/ScheduleMsgController')
+
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const sesiones = require('./Controllers/TestController')
 
@@ -45,9 +48,9 @@ app.use(function (req, res, next) {
 
     const origin = req.headers.origin;
     if (allowedOrigins.includes(origin)) {
-         res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Origin', origin);
     }
-    
+
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,pulpocentral-access-token");
     res.header("Access-Control-Allow-Methods", "POST,GET,PATCH,PUT");
     next();
@@ -104,22 +107,22 @@ const massiveMsg = require('./models').MassiveMessage;
 const sendMessages = new CronJob('* * * * *', async function () {
 
     let dEnd = new Date();
-  //  dEnd.setHours(dEnd.getHours() + 1);
-    dEnd = dEnd.toLocaleString('sv-SE', { timeZone:  process.env.TZ || 'America/Lima' })
+    //  dEnd.setHours(dEnd.getHours() + 1);
+    dEnd = dEnd.toLocaleString('sv-SE', { timeZone: process.env.TZ || 'America/Lima' })
 
     let dIni = new Date();
     dIni.setHours(dIni.getHours() - 1);
-    dIni =  dIni.toLocaleString('sv-SE', { timeZone:  process.env.TZ || 'America/Lima' });
+    dIni = dIni.toLocaleString('sv-SE', { timeZone: process.env.TZ || 'America/Lima' });
 
     //console.log(`${dIni} ${dEnd}`);
 
     const messages = await massivemessageController.getPendingList({ dateIni: dIni, dateEnd: dEnd, status: 'Pendiente' });
 
-    await Promise.all(messages.map(async (msg,key)=>{
-      //  console.log(msg);
-        const msgMassive = await massiveMsg.findOne({where:{id: msg.msgMassiveId}});
-        const msgObj = {id: msg.msgMassiveId,contacts:[msg.contact], wpsession: msgMassive.wpId};
-        console.log(msgObj);
+    await Promise.all(messages.map(async (msg, key) => {
+        //  console.log(msg);
+        const msgMassive = await massiveMsg.findOne({ where: { id: msg.msgMassiveId } });
+        const msgObj = { id: msg.msgMassiveId, contacts: [msg.contact], wpsession: msgMassive.wpId };
+
         await socketIO.sendMessage(msgObj);
     }))
 
@@ -127,7 +130,45 @@ const sendMessages = new CronJob('* * * * *', async function () {
 }, null, true, process.env.TZ || 'America/Lima');
 
 
-sendMessages.start();
+
+const sendProgramatedMessages = new CronJob('* * * * *', async function () {
+    console.log("inicia envio masivo");
+    let dEnd = new Date();
+    //  dEnd.setHours(dEnd.getHours() + 1);
+    dEnd = dEnd.toLocaleString('sv-SE', { timeZone: process.env.TZ || 'America/Lima' })
+
+    let dIni = new Date();
+    dIni.setHours(dIni.getHours() - 1);
+    dIni = dIni.toLocaleString('sv-SE', { timeZone: process.env.TZ || 'America/Lima' });
+
+    console.log(dIni,dEnd)
+    const programatedMessages = await scheduleMsgController.getProgramatedMsgs(dIni, dEnd);
+    //console.log(programatedMessages)
+
+
+    await Promise.all(programatedMessages.map(async (msg, key) => {
+        try{
+            if (msg.dataValues.type == 'Mensaje') {
+                const msgObj = { id: msg.dataValues.idMassive, contacts: msg.dataValues.contacts, wpsession: msg.dataValues.MassiveMessage.wpId };
+                console.log(msgObj);
+                await socketIO.sendMessage(msgObj);
+            }else{
+               
+                const msgObj = { id: msg.dataValues.idMassive, contacts: msg.dataValues.contacts, from: msg.dataValues.MassiveMessage.twilioPhone.trim() };
+                console.log(msgObj);
+                await socketIO.sendCall(msgObj);
+            }
+    
+        }catch(err){
+            console.log(err)
+        }
+    }))
+}, null, true, process.env.TZ || 'America/Lima');
+
+
+
+sendProgramatedMessages.start();
+
 
 
 /**

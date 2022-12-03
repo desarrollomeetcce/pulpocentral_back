@@ -37,6 +37,8 @@ const clientController = require('../Controllers/ClientController');
 
 const twilioPhoneController = require('../Controllers/TwilioPhoneController');
 
+const scheduleMsgController = require('../Controllers/ScheduleMsgController');
+
 /** Middleware para validar JWT */
 const auth = require('../middleware/auth');
 
@@ -176,6 +178,7 @@ module.exports = (app) => {
      * Operaciones de grupos
      */
     app.post('/api/createGroup', auth, groupController.createGroup)
+    app.post('/api/getGroups', auth, groupController.get)
 
 
     /**
@@ -211,4 +214,12 @@ module.exports = (app) => {
     app.post('/api/getTwilioPhones', auth, twilioPhoneController.getPhones);
     app.post('/api/createTwilioPhone', auth, twilioPhoneController.create);
     app.put('/api/deleteTwilio', auth, twilioPhoneController.delete);
+
+    /**
+     * Opciones para la porgramación de mensajes
+     */
+    app.post('/api/getSchedules', auth, scheduleMsgController.get);
+    app.post('/api/createSchedule', auth, scheduleMsgController.add);
+    app.put('/api/deleteSchedule', auth, scheduleMsgController.delete);
+
 }

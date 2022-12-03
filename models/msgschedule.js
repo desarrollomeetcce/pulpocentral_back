@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
 
-            this.belongsTo(models.WebHook, { foreignKey: 'idWebhook' });
+            this.belongsTo(models.MassiveMessage, { foreignKey: 'idMassive' });
             this.belongsTo(models.MessageTemplate, { foreignKey: 'idTemplate' });
            // this.belongsToMany(models.File,{ through: 'TemplateFileRelations' })
         }
@@ -23,12 +23,14 @@ module.exports = (sequelize, DataTypes) => {
         name: {
             type: DataTypes.STRING,
         },
-        idWebhook: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: 'WebHook',
-                key: 'id',
-            }
+        status: {
+            type: DataTypes.STRING,
+        },
+        type: {
+            type: DataTypes.STRING,
+        },
+        user: {
+            type: DataTypes.STRING,
         },
         idTemplate: {
             type: DataTypes.INTEGER,
@@ -38,7 +40,14 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         idMassive: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'MassiveMessage',
+                key: 'id',
+            }
+        },
+        sendAt: {
+            type: DataTypes.DATE,
         },
         delay: {
             type: DataTypes.INTEGER,

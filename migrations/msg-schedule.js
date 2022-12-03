@@ -12,14 +12,23 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      idWebhook: {
-        type: Sequelize.INTEGER
+      status: {
+        type: Sequelize.STRING
+      },
+      type: {
+        type: Sequelize.STRING
       },
       idTemplate: {
         type: Sequelize.INTEGER
       },
       idMassive: {
         type: Sequelize.INTEGER
+      },
+      user:{
+        type: Sequelize.STRING,
+      },
+      sendAt:{
+        type: Sequelize.DATE,
       },
       delay:{
         type: Sequelize.INTEGER,
@@ -35,21 +44,22 @@ module.exports = {
         defaultValue:  Sequelize.fn('NOW')
       }
     });
+
     await queryInterface.addConstraint('MsgSchedules', {
-      fields: ['idWebhook'],
+      fields: ['idTemplate'],
       type: 'foreign key',
       references: {
-        table: 'WebHooks',
+        table: 'MessageTemplates',
         field: 'id'
       },
       onDelete: 'cascade',
       onUpdate: 'cascade'
     });
     await queryInterface.addConstraint('MsgSchedules', {
-      fields: ['idTemplate'],
+      fields: ['idMassive'],
       type: 'foreign key',
       references: {
-        table: 'MessageTemplates',
+        table: 'MassiveMessages',
         field: 'id'
       },
       onDelete: 'cascade',

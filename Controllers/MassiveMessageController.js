@@ -289,7 +289,11 @@ module.exports = {
 
 
         try {
-            delete messageObj.id;
+
+            if( messageObj.id){
+                delete messageObj.id;
+            }
+            
 
             messageObj.wpId = messageObj.wpId.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, '-');
 
