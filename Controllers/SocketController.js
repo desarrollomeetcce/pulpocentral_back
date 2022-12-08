@@ -329,6 +329,7 @@ const sendCall = async (msgObj) => {
                 tempContact = contact;
             }
 
+            console.log(tempContact)
             if (!tempContact.includes("+")) {
                 tempContact = "+" + tempContact;
             }
