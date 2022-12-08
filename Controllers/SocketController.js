@@ -320,6 +320,7 @@ const sendCall = async (msgObj) => {
         try {
 
             let tempContact = "";
+            console.log(contact)
             if (contact?.phone) {
                 tempContact = tempContact.phone;
             } else if (contact?.contact) {
