@@ -393,7 +393,7 @@ const sendCall = async (msgObj) => {
             //await sleep(messageHisotiral.dataValues.delay || 10000);
 
             let statusTemp = 'Error' + resendText;
-
+            let contactPhoneNumber = "";
             try {
 
                 let tempContact = contact?.phone ? contact.phone : contact?.contact;
@@ -405,7 +405,7 @@ const sendCall = async (msgObj) => {
                 } else {
                     tempContact = contact;
                 }
-
+                contactPhoneNumber = tempContact;
                 if (!tempContact.includes("+")) {
                     tempContact = "+" + tempContact;
                 }
@@ -420,10 +420,10 @@ const sendCall = async (msgObj) => {
                 })
 
                 statusTemp = 'Exitoso' + resendText;
-                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact?.phone ? contact.phone : contact.contact, count: count, status: 'Exitoso' + resendText });
+                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contactPhoneNumber, count: count, status: 'Exitoso' + resendText });
             } catch (err) {
                 console.log(err);
-                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact?.phone ? contact.phone : contact.contact, count: count, status: 'Error' + resendText });
+                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contactPhoneNumber, count: count, status: 'Error' + resendText });
             }
 
 
@@ -442,7 +442,7 @@ const sendCall = async (msgObj) => {
                     {
                         where: {
                             msgMassiveId: messageHisotiral.dataValues.id,
-                            contact: contact?.phone ? contact.phone : contact.contact,
+                            contact: contactPhoneNumber,
                         }
                     });
                 //  return true;
@@ -457,13 +457,13 @@ const sendCall = async (msgObj) => {
              * Actualiza el estatus
              */
             try {
-                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact?.phone ? contact.phone : contact.contact, count: count, status: 'Error' + resendText });
+                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contactPhoneNumber, count: count, status: 'Error' + resendText });
                 await massiveMessagesList.update(
                     { status: 'Error' + resendText },
                     {
                         where: {
                             msgMassiveId: messageHisotiral.dataValues.id,
-                            contact: contact?.phone ? contact.phone : contact.contact,
+                            contact:contactPhoneNumber,
                         }
                     });
                 //   return true;
