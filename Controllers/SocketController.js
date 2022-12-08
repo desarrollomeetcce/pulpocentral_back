@@ -124,28 +124,28 @@ const sednMessge = async (msgObj) => {
          * De esta forma no es tan evidente que es un bot
          */
 
-        let regularExpression= /(?<=\{).*?(?=\})/g;
-        
+        let regularExpression = /(?<=\{).*?(?=\})/g;
+
 
         let newMsg = messageHisotiral.dataValues.body;
 
-       
+
         let tempSpeechArr = newMsg.match(regularExpression);
 
-        if(tempSpeechArr?.length > 0 ){
-            for(let i = 0; i< tempSpeechArr.length;i++){
+        if (tempSpeechArr?.length > 0) {
+            for (let i = 0; i < tempSpeechArr.length; i++) {
                 console.log(tempSpeechArr[i]);
                 const speechArr = tempSpeechArr[i].split('|');
                 console.log(speechArr)
                 let newIndex = count % speechArr.length;
-    
+
                 newMsg = newMsg.replace(`{${tempSpeechArr[i]}}`, speechArr[newIndex]);
                 console.log(newMsg)
             }
         }
 
-       
-      
+
+
 
         // console.log(webhookTemp);
         for (let i = 0; i < messageHisotiral.dataValues.Words.length; i++) {
@@ -274,15 +274,15 @@ const sednMessge = async (msgObj) => {
 
 const sendCall = async (msgObj) => {
 
-    let { id, contacts, from,resend,resendAll } = msgObj;
+    let { id, contacts, from, resend, resendAll } = msgObj;
 
     console.log("inciia llamada " + from);
     console.log(msgObj);
 
-    let resendText= '';
+    let resendText = '';
 
-    if(resend){
-        resendText=' (Reenviado)';
+    if (resend) {
+        resendText = ' (Reenviado)';
     }
 
     let messageHisotiral = null;
@@ -305,8 +305,8 @@ const sendCall = async (msgObj) => {
 
     console.log("incia map de contactos");
 
-    if(resendAll){
-        contacts  = await massiveMessagesList.findAll({
+    if (resendAll) {
+        contacts = await massiveMessagesList.findAll({
             where: {
                 msgMassiveId: messageHisotiral.dataValues.id,
                 status: { [Op.notLike]: '%Exitoso%' }// NOT LIKE '%hat'
@@ -319,18 +319,29 @@ const sendCall = async (msgObj) => {
     contacts.map(async (contact, key) => {
         try {
 
+            let tempContact = "";
+            if (contact?.phone) {
+                tempContact = tempContact.phone;
+            } else if (contact?.contact) {
+                tempContact = tempContact.contact;
+            } else {
+                tempContact = contact;
+            }
 
+            if (!tempContact.includes("+")) {
+                tempContact = "+" + tempContact;
+            }
             const updated = await massiveMessagesList.findOne({
                 where: {
                     msgMassiveId: messageHisotiral.dataValues.id,
-                    contact: contact.phone,
+                    contact: tempContact,
                 }
             })
 
             if (!updated) {
                 await massiveMessagesList.create({
                     msgMassiveId: messageHisotiral.dataValues.id,
-                    contact: contact.phone,
+                    contact: tempContact,
                     status: 'Pendiente',
                 });
             }
@@ -352,7 +363,7 @@ const sendCall = async (msgObj) => {
 
     //console.log("Crea el speech");
 
-    if(!resend){
+    if (!resend) {
         const fs = require('fs');
 
         fs.writeFileSync(`media/call${messageHisotiral.dataValues.id}.xml`,
@@ -361,7 +372,7 @@ const sendCall = async (msgObj) => {
         </Response>
         `);
     }
-  
+
 
     console.log(`
     ${process.env.BASE_URL}/media/${media}`);
@@ -381,17 +392,17 @@ const sendCall = async (msgObj) => {
             //  console.log(`Esperando para enviar mensaje ${messageHisotiral.dataValues.delay}`)
             //await sleep(messageHisotiral.dataValues.delay || 10000);
 
-            let statusTemp = 'Error'+resendText;
+            let statusTemp = 'Error' + resendText;
 
             try {
 
-                let tempContact = contact?.phone ?  contact.phone:  contact?.contact;
+                let tempContact = contact?.phone ? contact.phone : contact?.contact;
 
-                if(contact?.phone){
+                if (contact?.phone) {
                     tempContact = tempContact.phone;
-                }else if(contact?.contact){
+                } else if (contact?.contact) {
                     tempContact = tempContact.contact;
-                }else{
+                } else {
                     tempContact = contact;
                 }
 
@@ -408,11 +419,11 @@ const sendCall = async (msgObj) => {
                     method: 'GET'
                 })
 
-                statusTemp = 'Exitoso'+resendText;
-                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact?.phone ?  contact.phone:  contact.contact, count: count,status: 'Exitoso'+resendText });
+                statusTemp = 'Exitoso' + resendText;
+                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact?.phone ? contact.phone : contact.contact, count: count, status: 'Exitoso' + resendText });
             } catch (err) {
                 console.log(err);
-                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact?.phone ?  contact.phone:  contact.contact, count: count,status: 'Error'+resendText });
+                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact?.phone ? contact.phone : contact.contact, count: count, status: 'Error' + resendText });
             }
 
 
@@ -420,7 +431,7 @@ const sendCall = async (msgObj) => {
             await massiveMessages.update({ totalMessagesSend: count }, { where: { id: messageHisotiral.dataValues.id } });
 
             // console.log(`MSG_SUCCESS${messageHisotiral.id}`)
-            
+
             /**
              * Actualiza el estatus
              */
@@ -431,7 +442,7 @@ const sendCall = async (msgObj) => {
                     {
                         where: {
                             msgMassiveId: messageHisotiral.dataValues.id,
-                            contact: contact?.phone ?  contact.phone:  contact.contact,
+                            contact: contact?.phone ? contact.phone : contact.contact,
                         }
                     });
                 //  return true;
@@ -446,13 +457,13 @@ const sendCall = async (msgObj) => {
              * Actualiza el estatus
              */
             try {
-                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact?.phone ?  contact.phone:  contact.contact, count: count,status: 'Error'+resendText });
+                io.sockets.emit(`MSG_SUCCESS${messageHisotiral.dataValues.id}`, { contact: contact?.phone ? contact.phone : contact.contact, count: count, status: 'Error' + resendText });
                 await massiveMessagesList.update(
-                    { status: 'Error'+resendText },
+                    { status: 'Error' + resendText },
                     {
                         where: {
                             msgMassiveId: messageHisotiral.dataValues.id,
-                            contact: contact?.phone ?  contact.phone:  contact.contact,
+                            contact: contact?.phone ? contact.phone : contact.contact,
                         }
                     });
                 //   return true;
