@@ -321,11 +321,14 @@ const sendCall = async (msgObj) => {
 
             let tempContact = "";
             console.log(contact)
-            if (contact?.phone) {
+            if (contact.phone) {
                 tempContact = tempContact.phone;
-            } else if (contact?.contact) {
+                console.log("entra phone")
+            } else if (contact.contact) {
                 tempContact = tempContact.contact;
+                console.log("entra contact")
             } else {
+                console.log("entra completo")
                 tempContact = contact;
             }
 
