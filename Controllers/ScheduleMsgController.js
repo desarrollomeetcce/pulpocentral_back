@@ -280,4 +280,47 @@ module.exports = {
             return [];
         }
     },
+     /**
+     * Fucnion para eliminar el mensaje programado por id
+     * @param {*} req 
+     * @param {*} res 
+     * @returns 
+     */
+      async updateStatus(id,status) {
+        /**
+        * Variables para guardar los mensaje y el historial
+        */
+        let arrMsg = [];
+        let historyObj = {};
+
+        /**
+         * Revisamos si contiene un id
+         */
+        const { id } = req.body;
+
+        if (id) {
+            try {
+
+                const updated = await msgSchedule.update({status:status},{
+                    where: {
+                        id: id
+                    }
+                })
+                return null;
+            } catch (err) {
+                historyObj.user = id;
+                historyObj.changeType = 'ProfileDelError';
+                historyObj.description = `Err:  ${err.message}`;
+                history.regHistory(historyObj);
+
+                arrMsg.push(`Ocurrio un error al eliminar el mensaje programado`);
+                arrMsg.push(err.message);
+
+                return null;
+            }
+        } else {
+            arrMsg.push(`El id es requerido`);
+            return null;
+        }
+    },
 };

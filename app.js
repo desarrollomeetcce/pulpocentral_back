@@ -153,6 +153,7 @@ const sendProgramatedMessages = new CronJob('* * * * *', async function () {
 
     await Promise.all(programatedMessages.map(async (msg, key) => {
         try {
+            scheduleMsgController.updateStatus(msg.dataValues.id,'Enviado');
             if (msg.dataValues.type == 'Mensaje') {
                 const msgObj = { id: msg.dataValues.idMassive, contacts: msg.dataValues.contacts, wpsession: msg.dataValues.MassiveMessage.wpId };
                 console.log(msgObj);
