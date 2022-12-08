@@ -387,6 +387,14 @@ const sendCall = async (msgObj) => {
 
                 let tempContact = contact?.phone ?  contact.phone:  contact?.contact;
 
+                if(contact?.phone){
+                    tempContact = tempContact.phone;
+                }else if(contact?.contact){
+                    tempContact = tempContact.contact;
+                }else{
+                    tempContact = contact;
+                }
+
                 if (!tempContact.includes("+")) {
                     tempContact = "+" + tempContact;
                 }
