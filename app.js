@@ -30,8 +30,10 @@ const bodyParser = require('body-parser');
 /**
  * Lee el body y lo convierte en JSON para su uso
  */
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(bodyParser.json({limit: process.env.MAX_BODY_SIZE ?  process.env.MAX_BODY_SIZE : '100mb'}));
+app.use(bodyParser.urlencoded({limit: process.env.MAX_BODY_SIZE ?  process.env.MAX_BODY_SIZE : '100mb'}));
+
 
 
 // El servidor debería empezar a escuchar
