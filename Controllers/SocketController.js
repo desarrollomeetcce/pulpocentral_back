@@ -332,21 +332,22 @@ const sendCall = async (msgObj) => {
                 tempContact = contact;
             }
 
-            
+            let contactPhoneNumber = tempContact;
+
             if (!tempContact.includes("+")) {
                 tempContact = "+" + tempContact;
             }
             const updated = await massiveMessagesList.findOne({
                 where: {
                     msgMassiveId: messageHisotiral.dataValues.id,
-                    contact: tempContact,
+                    contact: contactPhoneNumber,
                 }
             })
 
             if (!updated) {
                 await massiveMessagesList.create({
                     msgMassiveId: messageHisotiral.dataValues.id,
-                    contact: tempContact,
+                    contact: contactPhoneNumber,
                     status: 'Pendiente',
                 });
             }
