@@ -320,19 +320,19 @@ const sendCall = async (msgObj) => {
         try {
 
             let tempContact = "";
-            console.log(contact)
+            
             if (contact.phone) {
-                tempContact = tempContact.phone;
-                console.log("entra phone")
+                tempContact = contact.phone;
+                
             } else if (contact.contact) {
-                tempContact = tempContact.contact;
-                console.log("entra contact")
+                tempContact = contact.contact;
+                
             } else {
-                console.log("entra completo")
+                
                 tempContact = contact;
             }
 
-            console.log(tempContact)
+            
             if (!tempContact.includes("+")) {
                 tempContact = "+" + tempContact;
             }
@@ -404,9 +404,9 @@ const sendCall = async (msgObj) => {
                 let tempContact = contact?.phone ? contact.phone : contact?.contact;
 
                 if (contact?.phone) {
-                    tempContact = tempContact.phone;
+                    tempContact = contact.phone;
                 } else if (contact?.contact) {
-                    tempContact = tempContact.contact;
+                    tempContact = contact.contact;
                 } else {
                     tempContact = contact;
                 }
