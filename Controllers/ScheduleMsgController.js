@@ -293,10 +293,6 @@ module.exports = {
         let arrMsg = [];
         let historyObj = {};
 
-        /**
-         * Revisamos si contiene un id
-         */
-        const { id } = req.body;
 
         if (id) {
             try {
