@@ -898,3 +898,4 @@ const getIO = () => {
 exports.getIO = getIO;
 exports.initIO = initIO;
 exports.sendMessage = sednMessge;
+exports.sendCall = sendCall;
