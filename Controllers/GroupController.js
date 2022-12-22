@@ -87,6 +87,7 @@ module.exports = {
                     client.groupId = newGroup.id;
 
                     try {
+                        client.status=1;
                         return await clientsModel.create(client)
                     } catch (err) {
 
