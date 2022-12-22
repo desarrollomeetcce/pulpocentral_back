@@ -68,6 +68,7 @@ module.exports = {
                                 if (client.id && client?.id !== 0) {
                                     await clientsModel.update({ adviser: advisers[i].id }, { where: { id: client.id } })
                                 } else {
+                                    client.status=1;
                                     await clientsModel.create(client)
                                 }
 
