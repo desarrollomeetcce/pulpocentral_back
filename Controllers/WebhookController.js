@@ -19,6 +19,8 @@ const msgwordrelation = require('../models').MsgWordRelation;
 const libphonenumberJs = require('libphonenumber-js');
 
 
+
+
 /**
  * Funcion para esperar una cantidad de segundos
  * @param {*} ms 
@@ -1287,6 +1289,64 @@ module.exports = {
 
 
         }
-    }
+    },
+
+    /**
+     * Método que recibe la petición cuando twilio da una respuesta
+     * @param {*} req 
+     * @param {*} res 
+     */
+    async twilioCallbackRequest(req, res) {
+
+        /**
+         * Variables para guardar los mensaje y el historial
+         */
+        let arrMsg = [];
+        let historyObj = {};
+
+        /**
+         * Recupera el token de la url
+         */
+        const id = req.params.logId;
+
+
+        try{
+            const {CallStatus,Duration,CallDuration} = req.body;
+
+
+    
+            await massivemessagelist.update({status:CallStatus==='completed' ? 'Exitoso': 'Error (twilio)',twilioStatus: CallStatus,duration: `${Duration}-${CallDuration}`},{
+                where: {id: id}
+            });
+
+            const massiveMessge =  await massivemessagelist.findOne({
+                where: {id: id}
+            });
+    
+        
+    
+            socketIO.getIO().sockets.emit(`MSG_SUCCESS${massiveMessge.dataValues.msgMassiveId}`, { contact: massiveMessge.dataValues.contact, count: 0, newContact: { contact: massiveMessge.dataValues.contact, id: massiveMessge.dataValues.id, status: CallStatus==='completed' ? 'Exitoso': 'Error (twilio)',twilioStatus: CallStatus } });
+        }catch(err){
+            const {CallStatus,Duration,CallDuration} = req.body;
+
+
+            await massivemessagelist.update({twilioStatus: CallStatus,duration: `${Duration}-${CallDuration}`},{
+                where: {id: id}
+            });
+
+    
+            const massiveMessge =  await massivemessagelist.findOne({
+                where: {id: id}
+            });
+    
+
+            socketIO.getIO().sockets.emit(`MSG_SUCCESS${massiveMessge.dataValues.msgMassiveId}`, { contact: massiveMessge.dataValues.contact, count: 0, newContact: { contact: massiveMessge.dataValues.contact, id: massiveMessge.dataValues.id, status: 'Error',twilioStatus: CallStatus } });
+        }
+
+       
+
+
+        return res.status(200).send({ status: "Success", msg: arrMsg });
+    },
 
 };

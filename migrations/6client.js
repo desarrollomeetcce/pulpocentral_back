@@ -33,7 +33,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       status: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       adviser: {
         type: Sequelize.INTEGER
@@ -72,7 +72,16 @@ module.exports = {
       onDelete: 'cascade',
       onUpdate: 'cascade'
     });
-   
+    await queryInterface.addConstraint('Clients', {
+      fields: ['status'],
+      type: 'foreign key',
+      references: {
+        table: 'Status',
+        field: 'id'
+      },
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
+    });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.removeConstraint("Clients", "fkey_user_profile")

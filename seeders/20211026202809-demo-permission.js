@@ -108,6 +108,23 @@ module.exports = {
         name:'Agregar telefono twilio',
         description:'Permite Agregar una sesion'
       },
+      {
+        name:'Agregar estatus',
+        description:'Permite Agregar un estatus'
+      },
+      {
+        name:'Modificar estatus',
+        description:'Permite Agregar un estatus'
+      },
+      {
+        name:'Eliminar estatus',
+        description:'Permite eliminar un estatus'
+      },
+      {
+        name:'Mover clientes',
+        description:'Muestra el botón para mvoer los clientes de una base a otra'
+      },
+      
       
       
     ], {});

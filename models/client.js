@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     
       this.belongsTo(models.Group, { foreignKey: 'groupId'});
       this.belongsTo(models.User, { foreignKey: 'adviser'});
+      this.belongsTo(models.Status, { foreignKey: 'status'});
       this.belongsToMany(models.Comment,{ through: 'ClientCommentRelations' })
       this.belongsToMany(models.Tag,{ through: 'ClientTagRelations' })
     }
@@ -34,8 +35,15 @@ module.exports = (sequelize, DataTypes) => {
     city:  DataTypes.STRING,
     gender:  DataTypes.STRING,
     level:  DataTypes.STRING,
-    status:  DataTypes.STRING,
+    status: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Status', 
+        key: 'id', 
+      }
+    },
     adviser:  DataTypes.INTEGER,
+    
     
     groupId: {type: DataTypes.INTEGER,
       references: {

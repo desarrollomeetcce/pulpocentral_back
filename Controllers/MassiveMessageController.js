@@ -147,7 +147,7 @@ module.exports = {
                     include: [
                         {
                             model: massivemessagelist,
-                            attributes: ['id', 'contact', 'msgMassiveId', 'status','sendAt', 'updatedAt', 'createdAt'],
+                            attributes: ['id', 'contact','twilioStatus','duration', 'msgMassiveId', 'status','sendAt', 'updatedAt', 'createdAt'],
                         },
                     ],
                     order: [

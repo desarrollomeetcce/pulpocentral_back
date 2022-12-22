@@ -39,6 +39,10 @@ const twilioPhoneController = require('../Controllers/TwilioPhoneController');
 
 const scheduleMsgController = require('../Controllers/ScheduleMsgController');
 
+const googleAuthController = require('../Controllers/GoogleAuthController');
+
+const statusController = require('../Controllers/StatusController');
+
 /** Middleware para validar JWT */
 const auth = require('../middleware/auth');
 
@@ -163,10 +167,11 @@ module.exports = (app) => {
 
 
     app.post('/api/webhookPetition/:token', webhookController.tokenRequest);
+    app.post('/api/webhookCallback/:logId', webhookController.twilioCallbackRequest);
 
     /**
- * Operaciones para tags
- */
+     * Operaciones para tags
+     */
     app.post('/api/getTags', auth, tagController.getTags);
     app.post('/api/createTag', auth, tagController.addTag);
     app.put('/api/deleteTag', auth, tagController.deleteTag);
@@ -179,6 +184,12 @@ module.exports = (app) => {
      */
     app.post('/api/createGroup', auth, groupController.createGroup)
     app.post('/api/getGroups', auth, groupController.get)
+    app.post('/api/moveGroupData', auth, groupController.move)
+    app.post('/api/deleteGroup', auth, groupController.delete)
+    app.post('/api/mergeGroups', auth, groupController.merge)
+
+    app.post('/api/groupList', auth, groupController.getList)
+
 
 
     /**
@@ -221,5 +232,21 @@ module.exports = (app) => {
     app.post('/api/getSchedules', auth, scheduleMsgController.get);
     app.post('/api/createSchedule', auth, scheduleMsgController.add);
     app.put('/api/deleteSchedule', auth, scheduleMsgController.delete);
+
+    app.post('/oauth2callback', (req, res) => {
+        console.log(req.body);
+        return res.status(200);
+    })
+
+    app.post('/auth/google', auth, googleAuthController.auth)
+    app.post('/auth/google/sheet', auth, googleAuthController.getSheetData)
+
+
+    /**
+     * Operaciones para estatus
+     */
+    app.post('/api/getStatus', auth, statusController.get);
+    app.post('/api/createStatus', auth, statusController.add);
+    app.put('/api/deleteStatus', auth, statusController.delete);
 
 }

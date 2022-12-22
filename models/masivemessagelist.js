@@ -27,7 +27,13 @@ module.exports = (sequelize, DataTypes) => {
     }, 
     status: {
       type: DataTypes.STRING
-    },  
+    }, 
+    twilioStatus :{
+      type: DataTypes.STRING
+    },
+    duration: {
+      type: DataTypes.STRING
+    }, 
     sendAt:{
       type: DataTypes.DATE
     }

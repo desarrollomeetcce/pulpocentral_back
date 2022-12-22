@@ -4,3 +4,4 @@ config/config.json
 media
 .env
 .wwebjs_auth/
+credentials.json

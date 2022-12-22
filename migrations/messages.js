@@ -81,7 +81,7 @@ module.exports = {
     await queryInterface.addConstraint('Messages', {
       fields: ['chatId'],
       type: 'foreign key',
-      name: 'fkey_message_chat', // optional
+      name: 'fkey_message_chat2', // optional
       references: {
         table: 'Chats',
         field: 'id'

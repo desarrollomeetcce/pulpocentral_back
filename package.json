@@ -9,11 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "cron": "^2.1.0",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "googleapis": "^105.0.0",
     "jsonwebtoken": "^8.5.1",
     "libphonenumber-js": "^1.10.7",
     "mime-types": "^2.1.35",
@@ -27,6 +29,6 @@
     "socket.io-client": "^4.5.0",
     "twilio": "^3.82.1",
     "validate-phone-number-node-js": "^0.0.1",
-    "whatsapp-web.js": "^1.18.2"
+    "whatsapp-web.js": "^1.18.3"
   }
 }

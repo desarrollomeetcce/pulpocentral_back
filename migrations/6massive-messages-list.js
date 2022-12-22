@@ -18,6 +18,12 @@ module.exports = {
       status: {
         type: Sequelize.STRING
       },  
+      twilioStatus: {
+        type: Sequelize.STRING
+      },
+      duration: {
+        type: Sequelize.STRING
+      },
       sendAt: {
         type: Sequelize.DATE
       },   

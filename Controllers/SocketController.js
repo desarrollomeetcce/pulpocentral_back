@@ -420,6 +420,7 @@ const sendCall = async (msgObj) => {
 
                 await clientTwilio.calls.create({
                     url: `${process.env.BASE_URL}/media/call${messageHisotiral.dataValues.id}.xml`,
+                    statusCallback: `${process.env.BASE_URL}/api/webhookCallback/${messageHisotiral.dataValues.id}`,
                     to: tempContact,
                     from: from,
                     method: 'GET'

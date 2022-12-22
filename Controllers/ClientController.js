@@ -6,8 +6,8 @@ const userModel = require('../models/').User;
 const clientCommentR = require('../models/').ClientCommentRelation;
 const clientTagR = require('../models/').ClientTagRelation;
 const history = require('./HistoricoController');
-
-
+const massivemessagelist = require('../models').MassiveMessageList;
+const statusModel = require('../models').Status;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
@@ -62,9 +62,6 @@ module.exports = {
                 filter.adviser = adviser;
                 
             }
-            console.log(req.body);
-            console.log(filter);
-
             
             const clients = await clientsModel.findAll(
                 {
@@ -75,17 +72,40 @@ module.exports = {
 
                         },
                         {
+                            model: statusModel
+                        },
+                        {
                             model: tagModel,
-
                         },
                         {
                             model: userModel,
                             attributes: ['id','firstName']
                         }
                     ],
+         
+                    
                 }
             );
-
+            
+            await Promise.all(clients.map(async (client)=>{
+                const statusList = await massivemessagelist.findAll(
+                    {
+                        offset: 3, limit: 3,
+                        where: {contact: client.dataValues.phone},
+                        order: [
+                            // Will escape full_name and validate DESC against a list of valid direction parameters
+                            ['updatedAt', 'DESC']
+                        ]
+                    }
+                );
+                   // console.log(statusList)
+                statusList.map((status,index)=>{
+                    client.dataValues[`statusLlamada${index}`] = status.dataValues.twilioStatus;
+                    client.dataValues[`statusMensaje${index}`] = status.dataValues.status;
+                })
+                return true;
+               
+            }))
 
             return res.status(200).send({ status: "Success", clients: clients });
         } catch (err) {

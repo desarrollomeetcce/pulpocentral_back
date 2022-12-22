@@ -1,41 +1,29 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('UserAuths', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      email: {
-        allowNull: false,
-        primaryKey: true,
+      refresh_token: {
         type: Sequelize.STRING
       },
-      firstName: {
+      client_secret: {
         type: Sequelize.STRING
       },
-      lastName: {
+      client_id: {
         type: Sequelize.STRING
       },
-      profile: {
+      type: {
+        type: Sequelize.STRING
+      },
+      idUser: {
         allowNull: false,
         type: Sequelize.INTEGER,
         defaultValue:  1
-      },
-      password: {
-        type: Sequelize.STRING
-      },
-      status: {
-        type: Sequelize.STRING,
-        defaultValue:  "Desconectado"
-      },
-      authToken: {
-        type: Sequelize.STRING,
-      },
-      socketId: {
-        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -48,12 +36,12 @@ module.exports = {
         defaultValue:  Sequelize.fn('NOW')
       }
     })
-    await queryInterface.addConstraint('Users', {
-      fields: ['profile'],
+    await queryInterface.addConstraint('UserAuths', {
+      fields: ['idUser'],
       type: 'foreign key',
-      name: 'fkey_user_profile', // optional
+      name: 'fkey_userauths_users', // optional
       references: {
-        table: 'Profiles',
+        table: 'Users',
         field: 'id'
       },
       onDelete: 'cascade',
@@ -62,7 +50,7 @@ module.exports = {
    
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeConstraint("Users", "fkey_user_profile")
-    await queryInterface.dropTable('Users');
+    await queryInterface.removeConstraint("UserAuths", "fkey_userauths_users")
+    await queryInterface.dropTable('UserAuths');
   }
 };
