@@ -183,6 +183,8 @@ module.exports = {
 
         const { sheetID, sheetNames } = req.body;
 
+        console.log(sheetID)
+        console.log(sheetNames)
 
         const defaultStructure = {
             "A": { localColName: "firstName", simpleName: "Nombre" },
