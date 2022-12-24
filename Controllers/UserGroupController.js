@@ -329,7 +329,7 @@ module.exports = {
             currentDatabase = currentDatabase.dataValues;
 
 
-            const newClient = convertObjectSheetToClient(currentDatabase.id, sheetData, JSON.parse(currentDatabase.columnsStructure));
+            const newClient = convertObjectSheetToClient(currentDatabase.id, JSON.parse(sheetData), JSON.parse(currentDatabase.columnsStructure));
 
             if (!newClient) {
                 return res.status(200).send({ status: "Error", msg: 'No se logró generar el cliente' });
