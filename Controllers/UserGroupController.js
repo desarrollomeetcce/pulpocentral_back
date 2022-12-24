@@ -23,6 +23,7 @@ const convertObjectSheetToClient = (databaseID, sheetData, defaultStructure) => 
         })
 
         newClient.groupId = databaseID;
+        newClient.status = 1;
 
         return newClient;
 
