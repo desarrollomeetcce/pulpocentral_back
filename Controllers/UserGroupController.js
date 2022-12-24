@@ -183,8 +183,9 @@ module.exports = {
 
         const { sheetID, sheetNames } = req.body;
 
-        console.log(sheetID)
-        console.log(sheetNames)
+       
+        
+        
 
         const defaultStructure = {
             "A": { localColName: "firstName", simpleName: "Nombre" },
@@ -214,6 +215,11 @@ module.exports = {
             }
 
             let count = 0;
+
+            console.log(sheetID)
+            console.log(sheetNames)
+            console.log(JSON.parse(sheetNames))
+            console.log(Array.from(sheetNames))
 
             await Promise.all(sheetNames.map(async (sheetName) => {
 
