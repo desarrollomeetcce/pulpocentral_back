@@ -328,7 +328,8 @@ module.exports = {
 
             currentDatabase = currentDatabase.dataValues;
 
-
+            console.log(sheetData)
+            console.log( JSON.parse(sheetData))
             const newClient = convertObjectSheetToClient(currentDatabase.id, JSON.parse(sheetData), JSON.parse(currentDatabase.columnsStructure));
 
             if (!newClient) {
