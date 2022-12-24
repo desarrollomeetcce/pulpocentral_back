@@ -17,8 +17,23 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Group.init({
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    }, 
     name: DataTypes.STRING,
     membersCount: DataTypes.INTEGER,
+    userGroupId: {
+      type: DataTypes.INTEGER
+    },
+    sheetId: {
+      type: DataTypes.STRING
+    },
+    columnsStructure: {
+      type: DataTypes.STRING
+    },
     
   }, {
     sequelize,

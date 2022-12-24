@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Groups', {
+    await queryInterface.createTable('UserGroups', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,23 +9,16 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
-        allowNull: false,
         type: Sequelize.STRING
       },
-      userGroupId: {
-        allowNull: true,
-        type: Sequelize.INTEGER
-      },
-      sheetId: {
-        allowNull: true,
+      status: {
         type: Sequelize.STRING
       },
-      columnsStructure: {
-        allowNull: true,
+      token: {
         type: Sequelize.STRING
       },
-      membersCount:{
-        type: Sequelize.INTEGER
+      membershepId: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -37,22 +30,9 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue:  Sequelize.fn('NOW')
       }
-    })
-    await queryInterface.addConstraint('Groups', {
-      fields: ['userGroupId'],
-      type: 'foreign key',
-      name: 'fkey_group_userGroupId', // optional
-      references: {
-        table: 'UserGroups',
-        field: 'id'
-      },
-      onDelete: 'cascade',
-      onUpdate: 'cascade'
     });
   },
-  
   down: async (queryInterface, Sequelize) => {
-   
-    await queryInterface.dropTable('Groups');
+    await queryInterface.dropTable('Profiles');
   }
 };

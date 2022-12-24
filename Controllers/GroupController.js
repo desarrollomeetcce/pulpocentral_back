@@ -9,6 +9,46 @@ const clientsModel = require('../models/').Client;
  */
 module.exports = {
 
+    async updateGroup(req, res) {
+        /**
+         * Variables para guardar los mensaje y el historial
+         */
+        let arrMsg = [];
+        let historyObj = {};
+
+
+        let { id, group } = req.body;
+        /**
+         * Busca los tags, si no existen regresa un arreglo vacio
+         */
+        try {
+
+            if(id){
+                const newGroup = await groupModel.update(
+                    group,
+                    {
+                        where:{id:id}
+                    }
+                )
+                return res.status(200).send({ status: "Success", group: newGroup });
+            }else{
+                const newGroup = await groupModel.create(
+                    group,
+                )
+                return res.status(200).send({ status: "Success", group: newGroup });
+            }
+
+        }catch(err){
+            historyObj.user = 'SystemRoot';
+            historyObj.changeType = 'UPdateGroupError';
+            historyObj.description = `Err:  ${err.message}`;
+            history.regHistory(historyObj);
+
+            arrMsg.push(err.message);
+
+            return res.status(200).send({ status: "Error", msg: arrMsg });
+        }
+    },
     /**
      * Obtiene los tags actuales
      * @param {*} req 

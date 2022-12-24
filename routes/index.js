@@ -43,6 +43,8 @@ const googleAuthController = require('../Controllers/GoogleAuthController');
 
 const statusController = require('../Controllers/StatusController');
 
+const userGroupController = require('../Controllers/UserGroupController');
+
 /** Middleware para validar JWT */
 const auth = require('../middleware/auth');
 
@@ -183,6 +185,7 @@ module.exports = (app) => {
      * Operaciones de grupos
      */
     app.post('/api/createGroup', auth, groupController.createGroup)
+    app.post('/api/updateGroup', auth, groupController.updateGroup)
     app.post('/api/getGroups', auth, groupController.get)
     app.post('/api/moveGroupData', auth, groupController.move)
     app.post('/api/deleteGroup', auth, groupController.delete)
@@ -234,7 +237,7 @@ module.exports = (app) => {
     app.put('/api/deleteSchedule', auth, scheduleMsgController.delete);
 
     app.post('/oauth2callback', (req, res) => {
-        console.log(req.body);
+       
         return res.status(200);
     })
 
@@ -248,5 +251,10 @@ module.exports = (app) => {
     app.post('/api/getStatus', auth, statusController.get);
     app.post('/api/createStatus', auth, statusController.add);
     app.put('/api/deleteStatus', auth, statusController.delete);
+
+
+
+    app.post('/api/googleSheetSync/:token', userGroupController.tokenSheetReg);
+    app.post('/api/googleSheetReg/:token', userGroupController.tokenSheetRequest);
 
 }

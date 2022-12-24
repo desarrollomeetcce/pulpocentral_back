@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
     
       this.belongsTo(models.Profile, { foreignKey: 'profile'});
+      this.belongsTo(models.UserGroup, { foreignKey: 'userGroupId'});
     }
   };
   User.init({
@@ -31,6 +32,12 @@ module.exports = (sequelize, DataTypes) => {
       model: 'Profiles', 
       key: 'id', 
     }},
+    userGroupId: {type: DataTypes.INTEGER,
+      references: {
+      model: 'UserGroups', 
+      key: 'id', 
+    }},
+    
     email: { type:DataTypes.STRING, primaryKey: true},
     status: {
       type: DataTypes.STRING,
